@@ -1,9 +1,12 @@
 # using cligen -> https://github.com/c-blake/cligen
+import os
 
+import cli/data
 
 #starting with the wish list
 proc init()=
-    discard
+    data.initialize_repo()
+    echo "Initalized empty Forrest repository"
 
 proc hash_object()=
     discard
