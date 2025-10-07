@@ -1,4 +1,10 @@
 # using cligen -> https://github.com/c-blake/cligen
+# use marshal and streams inplace of pickle from python to dump objects to memory
+# import
+#   marshal, streams
+
+# var s = newFileStream("somefile.txt", fmWrite)
+
 import os
 
 import cli/data
