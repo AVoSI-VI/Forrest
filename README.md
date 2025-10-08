@@ -12,9 +12,13 @@ from testing in the original python repo commits after changes happen in < 30s o
 # Note:
 Forrest doesn't preclude you from using git you can use both at the same time in the same repo. You would just need to add the .Forrest folder to your git ignore.
 
+# Contributing:
+- if you want to contribute to the project please open an issue to discuss what you intend to change first before submitting a pull request. Yes even if it is just correcting a spelling mistake.
+
 ## TODO List:
 - reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file
 - cloneing from a remote repo
+- clone a list of files
 - only saving diffs to save on storage space
 - compressing file objects to save on space
 - branching and merging
