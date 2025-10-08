@@ -1,9 +1,5 @@
 # using cligen -> https://github.com/c-blake/cligen
-# use marshal and streams inplace of pickle from python to dump objects to memory
-# import
-#   marshal, streams
-
-# var s = newFileStream("somefile.txt", fmWrite)
+# use jsony to serialize objects to then dump to disk -> https://github.com/treeform/jsony
 
 import os
 
