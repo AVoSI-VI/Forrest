@@ -52,6 +52,6 @@ proc clone_repo()=
 proc clone_file()=
     discard
 
-# when isMainModule:
-#   import cligen
-#   dispatchMulti([foo, help={"myRequired": "Need it!"}], [bar])
+when isMainModule:
+  import cligen
+  dispatchMulti([init])
