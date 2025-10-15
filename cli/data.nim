@@ -1,13 +1,13 @@
-import std/dirs, std/paths
+import std/dirs, std/paths, std/base64, checksums/sha1
 
-let forrestDir: Path = Path(".Forrest/")
+let forrestDir: string = ".Forrest/"
 #data wish list
 proc initialize_repo*()=
     # TODO: look into this again, don't know if I want to do it this way or not
-    createDir(forrestDir)
-    createDir(Path(string(forrestDir) & "/objects"))
-    createDir(Path(string(forrestDir) & "/serialized")) # replace "picle" directory from Forrest-python
-    createDir(Path(string(forrestDir) & "/commits"))
+    createDir(Path(forrestDir))
+    createDir(Path(forrestDir & "/objects"))
+    createDir(Path(forrestDir & "/serialized")) # replace "pickle" directory from Forrest-python
+    createDir(Path(forrestDir & "/commits"))
 
 proc updat_ref*()=
     discard
@@ -15,8 +15,17 @@ proc updat_ref*()=
 proc get_ref*()=
     discard
 
-proc hash_object*()=
+proc hash_object*(data: string)=
     discard
+    #obj = 
+
+
+#python ref
+# obj = type_.encode() + b'\x00' + data
+#     oid = hashlib.sha1(obj).hexdigest()
+#     with open(f'{GIT_DIR}/objects/{oid}', 'wb') as out:
+#         out.write(obj)
+#     return oid
 
 proc get_object*()=
     discard
