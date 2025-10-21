@@ -1,7 +1,7 @@
 # using cligen -> https://github.com/c-blake/cligen
 # use jsony to serialize objects to then dump to disk -> https://github.com/treeform/jsony
 
-import os
+import os, strformat
 
 import cli/data
 
@@ -10,8 +10,8 @@ proc init()=
     data.initialize_repo()
     echo "Initalized empty Forrest repository"
 
-proc hash_object()=
-    discard
+proc hash_object(filename: string)=
+    echo data.hash_object(filename)
 
 proc cat_file()=
     discard
@@ -54,4 +54,5 @@ proc clone_file()=
 
 when isMainModule:
   import cligen
-  dispatchMulti([init])
+  dispatchMulti([init],
+    [Forrest.hash_object, help={"filename": "requires a filename to hash"}])

@@ -1,4 +1,4 @@
-checksums/sha1
+import checksums/sha1
 
-proc hash_file_contents_for_OID*(fileContents: string): string=
-    return secureHash(fileContents)
+proc hash_file_contents_for_OID*(file: string): string=
+    return $secureHashFile(file)
