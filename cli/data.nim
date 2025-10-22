@@ -1,4 +1,4 @@
-import std/dirs, std/paths, std/base64, os
+import std/dirs, std/paths#, std/base64, os
 
 import ../lib/[filehasher]
 
@@ -24,18 +24,9 @@ proc hash_object*(data: string): string=
     except CatchableError as e:
         echo e.msg
     return oid
-    #obj = 
 
-
-#python ref
-# obj = type_.encode() + b'\x00' + data
-#     oid = hashlib.sha1(obj).hexdigest()
-#     with open(f'{GIT_DIR}/objects/{oid}', 'wb') as out:
-#         out.write(obj)
-#     return oid
-
-proc get_object*()=
-    discard
+proc get_object*(oid: string)=
+    echo readFile(forrestDir & "/" & "objects/" & oid)
 
 proc write_commit_objects*()=
     discard
