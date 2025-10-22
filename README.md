@@ -19,6 +19,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file
 - cloneing from a remote repo
 - clone a list of files
+- split up object directories for performance
 - only saving diffs to save on storage space
 - compressing file objects to save on space
 - branching and merging
