@@ -1,8 +1,12 @@
+import std/tables
 
+import jsony
 # base wish list
 
-proc write_tree(directory: string)=
-    discard
+proc write_tree*(directory: string = "."): Table[string, string]=
+    
+    var changes = initTable[string, string]()
+    return changes
 
 proc empty_current_directory()=
     discard

@@ -3,7 +3,7 @@
 
 # import os, strformat
 
-import cli/data
+import cli/[data, base]
 
 #starting with the wish list
 proc init()=
@@ -17,7 +17,7 @@ proc cat_file(oid: string)=
     data.get_object(oid)
 
 proc write_tree()=
-    discard
+    echo base.write_tree()
 
 proc read_tree()=
     discard
@@ -56,5 +56,6 @@ when isMainModule:
   import cligen
   dispatchMulti([init],
     [Forrest.hash_object, help={"filename": "requires a filename to hash"}],
-    [Forrest.cat_file, help={"cat": "requires the oid of the file"}]
+    [Forrest.cat_file, help={"cat": "requires the oid of the file"}],
+    [Forrest.write_tree]
     )
