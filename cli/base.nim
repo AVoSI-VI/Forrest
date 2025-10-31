@@ -6,14 +6,27 @@ import data
 # base wish list
 
 
-proc write_tree*(directory: string = "."): Table[string, string]=
-    var changes = initTable[string, string]()
+proc write_tree*(directory: string = "."): Table[string, seq[string]]=
+    #TODO check if objectMap dumpfile exists -> use that else create initial objectMap
+    var objectMap: Table[system.string, seq[string]] = initTable[string, seq[string]]()
+    var changes: Table[system.string, seq[string]] = initTable[string, seq[string]]()
     for files in walkDirRec(Path(directory)):
         #split out the directory for easier ignore
         let splitUpDir = string(files).split("/")
+        let sFiles = $files #only do the string conversion once
         if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
             continue
         let oid = data.hash_object(string(files))
+        if not objectMap.hasKey(sFiles):
+            objectMap[sFiles] = @[oid]
+            changes[sFiles] = @[oid]
+        elif objectMap.hasKey(sFiles) and objectMap[sFiles].contains(oid):
+            continue
+        else:
+            objectMap[sFiles].add(oid)
+            changes[sFiles].add(oid)
+
+    #TODO jsony and dump objectMap to .Forrest/serialized
     return changes
 
 proc empty_current_directory()=
