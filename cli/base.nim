@@ -1,4 +1,4 @@
-import std/[tables,dirs, paths, strutils, sequtils]
+import std/[tables,dirs, paths, strutils, sequtils, os]
 
 import jsony
 
@@ -7,8 +7,16 @@ import data
 
 
 proc write_tree*(directory: string = "."): Table[string, seq[string]]=
-    #TODO check if objectMap dumpfile exists -> use that else create initial objectMap
-    var objectMap: Table[system.string, seq[string]] = initTable[string, seq[string]]()
+    #TODO: revisit
+    
+
+    var objectMap: Table[system.string, seq[string]] = (
+        if fileExists("./.Forrest/serialized/Forrest.json"):
+            var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+            contentsOfForrestJson.fromJson(Table[string, seq[string]])
+        else:
+            initTable[string, seq[string]]()
+    )
     var changes: Table[system.string, seq[string]] = initTable[string, seq[string]]()
     for files in walkDirRec(Path(directory)):
         #split out the directory for easier ignore
@@ -27,6 +35,12 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
             changes[sFiles].add(oid)
 
     #TODO jsony and dump objectMap to .Forrest/serialized
+    try:
+        let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
+        defer: f.close
+        f.writeLine(objectMap.toJson())
+    except Exception:
+        echo "unable to write serialized Forrest.json file"
     return changes
 
 proc empty_current_directory()=
