@@ -6,9 +6,9 @@ let forrestDir: string = ".Forrest/"
 #data wish list
 proc initialize_repo*()=
     createDir(Path(forrestDir))
-    createDir(Path(forrestDir & "/objects"))
-    createDir(Path(forrestDir & "/serialized")) # replace "pickle" directory from Forrest-python
-    createDir(Path(forrestDir & "/commits"))
+    createDir(Path(forrestDir & "objects"))
+    createDir(Path(forrestDir & "serialized")) # replace "pickle" directory from Forrest-python
+    createDir(Path(forrestDir & "commits"))
 
 proc updat_ref*()=
     discard
