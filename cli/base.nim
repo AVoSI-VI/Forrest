@@ -8,8 +8,6 @@ import data
 
 proc write_tree*(directory: string = "."): Table[string, seq[string]]=
     #TODO: revisit
-    
-
     var objectMap: Table[system.string, seq[string]] = (
         if fileExists("./.Forrest/serialized/Forrest.json"):
             var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
@@ -33,8 +31,6 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
         else:
             objectMap[sFiles].add(oid)
             changes[sFiles].add(oid)
-
-    #TODO jsony and dump objectMap to .Forrest/serialized
     try:
         let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
         defer: f.close
