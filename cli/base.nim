@@ -35,12 +35,20 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
         let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
         defer: f.close
         f.writeLine(objectMap.toJson())
-    except Exception:
+    except Exception as e:
         echo "unable to write serialized Forrest.json file"
+        echo ""
+        echo e.msg
     return changes
 
 proc empty_current_directory()=
-    discard
+    let directory = "."
+    for files in walkDirRec(Path(directory)):
+        let splitUpDir = string(files).split("/")
+        let sFiles = $files
+        if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
+            continue
+        removeFile(sfiles)
 
 proc read_tree()=
     discard

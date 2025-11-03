@@ -54,8 +54,9 @@ proc clone_file()=
 
 when isMainModule:
   import cligen
-  dispatchMulti([init],
+  dispatchMulti(
+    [init],
     [Forrest.hash_object, help={"filename": "requires a filename to hash"}],
-    [Forrest.cat_file, help={"cat": "requires the oid of the file"}],
+    [Forrest.cat_file, help={"oid": "requires the oid of the file"}],
     [Forrest.write_tree]
     )
