@@ -48,7 +48,12 @@ proc empty_current_directory()=
         let sFiles = $files
         if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
             continue
-        removeFile(sfiles)
+        try:
+            removeFile(sfiles)
+        except Exception as e:
+            echo "unable to clear current directory"
+            echo ""
+            echo e.msg
 
 proc read_tree()=
     discard
