@@ -42,20 +42,28 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
     return changes
 
 proc empty_current_directory()=
+    #TODO: revisit. Was easiest way to clear non git directories as nims walk dir procs and remove dir procs 
+    # don't work the same as python. would need a custom implementation to keep it in line with python
     let directory = "."
+    #seq to hold all top level directories that don't contain git repos
+    var nonGitDirs: seq[string] = @[]
     for files in walkDirRec(Path(directory)):
         let splitUpDir = string(files).split("/")
         let sFiles = $files
         if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
             continue
+        nonGitDirs.add(splitUpDir[1]) # add actual directory from split ex: [".", ".Forrest"]
         try:
             removeFile(sfiles)
         except Exception as e:
             echo "unable to clear current directory"
             echo ""
             echo e.msg
+    #remove now empty directories
+    for nonGitDirectory in nonGitDirs:
+        osdirs.removeDir(nonGitDirectory) #recursively deletes directories
 
-proc read_tree()=
+proc read_tree*()=
     discard
 
 proc write_clone_file()=
