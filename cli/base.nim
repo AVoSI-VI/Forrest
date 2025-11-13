@@ -63,8 +63,14 @@ proc empty_current_directory()=
     for nonGitDirectory in nonGitDirs:
         osdirs.removeDir(nonGitDirectory) #recursively deletes directories
 
-proc read_tree*()=
-    discard
+proc read_tree*()= 
+    if fileExists("./.Forrest/serialized/Forrest.json"):
+        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+        empty_current_directory()
+        for k in objectMap.keys():
+            let l = len(objectMap[k]) - 1
+            writeFile(k, data.get_object(objectMap[k][l]))
 
 proc write_clone_file()=
     discard

@@ -14,7 +14,7 @@ proc hash_object(filename: string)=
     echo data.hash_object(filename)
 
 proc cat_file(oid: string)=
-    data.get_object(oid)
+    echo data.get_object(oid)
 
 proc write_tree()=
     echo base.write_tree()

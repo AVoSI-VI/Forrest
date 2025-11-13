@@ -19,14 +19,14 @@ proc get_ref*()=
 proc hash_object*(data: string): string=
     let oid = hash_file_contents_for_OID(data)
     try:
-        writeFile(forrestDir & "/" & "objects/" & oid, data)
+        writeFile(forrestDir & "objects/" & oid, data)
         
     except CatchableError as e:
         echo e.msg
     return oid
 
-proc get_object*(oid: string)=
-    echo readFile(forrestDir & "/" & "objects/" & oid)
+proc get_object*(oid: string): string=
+    return readFile(forrestDir & "objects/" & oid)
 
 proc write_commit_objects*()=
     discard
