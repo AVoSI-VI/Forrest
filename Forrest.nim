@@ -20,7 +20,7 @@ proc write_tree()=
     echo base.write_tree()
 
 proc read_tree()=
-    discard
+    base.read_tree()
 
 proc commit()=
     discard
@@ -58,5 +58,6 @@ when isMainModule:
     [init],
     [Forrest.hash_object, help={"filename": "requires a filename to hash"}],
     [Forrest.cat_file, help={"oid": "requires the oid of the file"}],
-    [Forrest.write_tree]
+    [Forrest.write_tree],
+    [Forrest.read_tree]
     )

@@ -72,9 +72,13 @@ proc read_tree*()=
             let l = len(objectMap[k]) - 1
             writeFile(k, data.get_object(objectMap[k][l]))
 
-proc write_clone_file()=
-    discard
-
+proc write_clone_file(fileAndPathToClone: string)=
+    if fileExists("./.Forrest/serialized/Forrest.json"):
+        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+        let l = len(objectMap[fileAndPathToClone]) - 1
+        writeFile(k, data.get_object(objectMap[fileAndPathToClone][l]))
+        
 proc roll_back_file()=
     discard
 
