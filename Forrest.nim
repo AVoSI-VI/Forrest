@@ -34,8 +34,8 @@ proc checkout()=
 proc tag()=
     discard
 
-proc roll_back_file()=
-    discard
+proc roll_back_file(fileandpath: string, oid: string)=
+    base.roll_back_file(fileandpath, oid)
 
 proc show_oid_history()=
     discard
@@ -59,5 +59,6 @@ when isMainModule:
     [Forrest.hash_object, help={"filename": "requires a filename to hash"}],
     [Forrest.cat_file, help={"oid": "requires the oid of the file"}],
     [Forrest.write_tree],
-    [Forrest.read_tree]
+    [Forrest.read_tree],
+    [Forrest.roll_back_file, help={"fileandpath": "requiers full path of file including filename", "oid": "requires the oid of the file"}]
     )

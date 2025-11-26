@@ -76,11 +76,18 @@ proc write_clone_file(fileAndPathToClone: string)=
     if fileExists("./.Forrest/serialized/Forrest.json"):
         var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
         let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-        let l = len(objectMap[fileAndPathToClone]) - 1
-        writeFile(fileAndPathToClone, data.get_object(objectMap[fileAndPathToClone][l]))
+        if objectMap.hasKey(fileAndPathToClone):
+            let l = len(objectMap[fileAndPathToClone]) - 1
+            writeFile(fileAndPathToClone, data.get_object(objectMap[fileAndPathToClone][l]))
         
-proc roll_back_file()=
-    discard
+proc roll_back_file*(fileAndPath: string, oid: string)=
+    if fileExists("./.Forrest/serialized/Forrest.json"):
+        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+        if objectMap.hasKey(fileAndPath):
+            let oidIndex = find(objectMap[fileAndPath], oid)
+            if oidIndex != -1:    
+                writeFile(fileAndPath, data.get_object(objectMap[fileAndPath][oidIndex]))
 
 proc show_oid_history()=
     discard
