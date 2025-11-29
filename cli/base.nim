@@ -89,8 +89,14 @@ proc roll_back_file*(fileAndPath: string, oid: string)=
             if oidIndex != -1:    
                 writeFile(fileAndPath, data.get_object(objectMap[fileAndPath][oidIndex]))
 
-proc show_oid_history()=
-    discard
+proc show_oid_history*(fileAndPath: string)=
+    if fileExists("./.Forrest/serialized/Forrest.json"):
+        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+        if objectMap.hasKey(fileAndPath):
+            echo objectMap[fileAndPath]
+    else:
+        echo "Forrest.json does not exist"
 
 proc commit(message: string)=
     discard

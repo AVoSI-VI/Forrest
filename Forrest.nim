@@ -37,8 +37,8 @@ proc tag()=
 proc roll_back_file(fileandpath: string, oid: string)=
     base.roll_back_file(fileandpath, oid)
 
-proc show_oid_history()=
-    discard
+proc show_oid_history(fileandpath: string)=
+    base.show_oid_history(fileandpath)
 
 proc set_remote()=
     discard
@@ -60,5 +60,6 @@ when isMainModule:
     [Forrest.cat_file, help={"oid": "requires the oid of the file"}],
     [Forrest.write_tree],
     [Forrest.read_tree],
-    [Forrest.roll_back_file, help={"fileandpath": "requiers full path of file including filename", "oid": "requires the oid of the file"}]
+    [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
+    [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}]
     )
