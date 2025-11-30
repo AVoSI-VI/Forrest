@@ -3,7 +3,7 @@
 
 # import os, strformat
 
-import cli/[data, base]
+import cli/[data, base, remote]
 
 #starting with the wish list
 proc init()=
@@ -40,8 +40,8 @@ proc roll_back_file(fileandpath: string, oid: string)=
 proc show_oid_history(fileandpath: string)=
     base.show_oid_history(fileandpath)
 
-proc set_remote()=
-    discard
+proc set_remote(remotename: string, remoteorigin: string)=
+    remote.set_remote(remotename, remoteorigin)
 
 proc list_remotes()=
     discard
@@ -61,5 +61,6 @@ when isMainModule:
     [Forrest.write_tree],
     [Forrest.read_tree],
     [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
-    [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}]
+    [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],
+    [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}]
     )

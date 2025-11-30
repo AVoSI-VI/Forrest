@@ -10,7 +10,7 @@ proc initialize_repo*()=
     createDir(Path(forrestDir & "serialized")) # replace "pickle" directory from Forrest-python
     createDir(Path(forrestDir & "commits"))
 
-proc updat_ref*()=
+proc update_ref*()=
     discard
 
 proc get_ref*()=
