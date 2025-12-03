@@ -22,4 +22,11 @@ proc set_remote*(name: string, remote: string)=
         echo e.msg
 
 proc list_remotes*()=
-    discard
+    var remoteMap: Table[system.string, string] = (
+        if fileExists("./.Forrest/serialized/remotes.json"):
+            var contentsOfForrestJson = readFile("./.Forrest/serialized/remotes.json")
+            contentsOfForrestJson.fromJson(Table[string, string])
+        else:
+            initTable[string, string]()
+    )
+    echo remoteMap

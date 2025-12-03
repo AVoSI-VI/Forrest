@@ -44,7 +44,7 @@ proc set_remote(remotename: string, remoteorigin: string)=
     remote.set_remote(remotename, remoteorigin)
 
 proc list_remotes()=
-    discard
+    remote.list_remotes()
 
 proc clone_repo()=
     discard
@@ -62,5 +62,6 @@ when isMainModule:
     [Forrest.read_tree],
     [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
     [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],
-    [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}]
+    [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}],
+    [Forrest.list_remotes]
     )
