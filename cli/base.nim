@@ -22,7 +22,7 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
         let sFiles = $files #only do the string conversion once
         if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
             continue
-        let oid = data.hash_object(string(files))
+        let oid = data.hash_object(sFiles)
         if not objectMap.hasKey(sFiles):
             objectMap[sFiles] = @[oid]
             changes[sFiles] = @[oid]
@@ -86,7 +86,7 @@ proc roll_back_file*(fileAndPath: string, oid: string)=
         let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
         if objectMap.hasKey(fileAndPath):
             let oidIndex = find(objectMap[fileAndPath], oid)
-            if oidIndex != -1:    
+            if oidIndex != -1:#find returns a -1 if the search item is not found    
                 writeFile(fileAndPath, data.get_object(objectMap[fileAndPath][oidIndex]))
 
 proc show_oid_history*(fileAndPath: string)=
@@ -95,6 +95,8 @@ proc show_oid_history*(fileAndPath: string)=
         let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
         if objectMap.hasKey(fileAndPath):
             echo objectMap[fileAndPath]
+        else:
+            echo "file and path does not exist in repo"
     else:
         echo "Forrest.json does not exist"
 
