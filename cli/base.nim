@@ -1,4 +1,4 @@
-import std/[tables, dirs, paths, strutils, sequtils, os]
+import std/[tables, dirs, paths, strutils, strformat, os]
 
 import jsony
 
@@ -100,8 +100,14 @@ proc show_oid_history*(fileAndPath: string)=
     else:
         echo "Forrest.json does not exist"
 
-proc commit(message: string)=
-    discard
+proc commit*(message: string): string=
+    let changes = write_tree()
+    var c: seq[string] = @[]
+    for k in changes.keys():
+        c.add(fmt"{k}: {changes[k]}")
+    let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
+
+    return data.write_commit_objects(commitContent)
 
 proc checkout()=
     discard

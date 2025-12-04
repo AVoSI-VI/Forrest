@@ -28,8 +28,14 @@ proc hash_object*(data: string): string=
 proc get_object*(oid: string): string=
     return readFile(forrestDir & "objects/" & oid)
 
-proc write_commit_objects*()=
-    discard
+proc write_commit_objects*(data: string): string=
+    let oid = hash_file_contents_for_OID(data)
+    try:
+        writeFile(forrestDir & "commits/" & oid, data)
+        
+    except CatchableError as e:
+        echo e.msg
+    return oid
 
-proc get_commit_objects*()=
-    discard
+proc get_commit_objects*(oid: string): string=
+    return readFile(forrestDir & "commits/" & oid)
