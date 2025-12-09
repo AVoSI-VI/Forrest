@@ -44,7 +44,7 @@ proc set_remote(remotename: string, remoteorigin: string)=
     remote.set_remote(remotename, remoteorigin)
 
 proc list_remotes()=
-    remote.list_remotes()
+    discard remote.list_remotes()
 
 proc clone_repo()=
     discard

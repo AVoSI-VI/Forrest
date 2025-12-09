@@ -109,11 +109,15 @@ proc commit*(message: string): string=
 
     return data.write_commit_objects(commitContent)
 
-proc checkout()=
+proc checkout(oid: string)=
+    discard
+    # let commit = get_commit(oid)
+    # read_tree(commit)
+
+proc get_commit(oid: string)=
+    # let commit = data.get_commit_objects(oid)
     discard
 
-proc get_commit()=
-    discard
 
 proc is_ignored()=
     discard
