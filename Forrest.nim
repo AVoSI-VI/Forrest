@@ -3,7 +3,7 @@
 
 # import os, strformat
 
-import cli/[data, base, remote]
+import cli/[data, base, remote, clone]
 
 #starting with the wish list
 proc init()=
@@ -46,10 +46,13 @@ proc set_remote(remotename: string, remoteorigin: string)=
 proc list_remotes()=
     discard remote.list_remotes()
 
-proc clone_repo()=
-    discard
+proc clone_repo(remoterepotag: string)=
+    clone.clone_repo(remoterepotag)
 
-proc clone_file()=
+proc clone_file_full(remoterepotag: string, fileandpath: string)=
+    clone.clone_file_full(remoterepotag, fileandpath)
+
+proc clone_file_sparse(remoterepotag: string, fileandpath: string)=
     discard
 
 when isMainModule:
@@ -63,5 +66,7 @@ when isMainModule:
     [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
     [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],
     [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}],
-    [Forrest.list_remotes]
+    [Forrest.list_remotes],
+    [Forrest.clone_repo, help={"remotename": "requires a short hand name for the set remote"}],
+    [Forrest.clone_file_full, help={"remotename": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}]
     )
