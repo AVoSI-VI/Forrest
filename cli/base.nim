@@ -39,7 +39,7 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
         echo "unable to write serialized Forrest.json file"
         echo ""
         echo e.msg
-    return changes
+    return objectMap
 
 proc empty_current_directory()=
     #TODO: revisit. Was easiest way to clear non git directories as nims walk dir procs and remove dir procs 
@@ -72,6 +72,12 @@ proc read_tree*()=
             let l = len(objectMap[k]) - 1
             writeFile(k, data.get_object(objectMap[k][l]))
 
+proc read_tree_commit(commitContent: Table[string, seq[string]])=
+    empty_current_directory()
+    for k in commitContent.keys():
+        let l = len(commitContent[k]) - 1
+        writeFile(k, data.get_object(commitContent[k][l]))
+
 proc write_clone_file*(fileAndPathToClone: string)=
     if fileExists("./.Forrest/serialized/Forrest.json"):
         var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
@@ -101,23 +107,23 @@ proc show_oid_history*(fileAndPath: string)=
         echo "Forrest.json does not exist"
 
 proc commit*(message: string): string=
-    let changes = write_tree()
-    var c: seq[string] = @[]
-    for k in changes.keys():
-        c.add(fmt"{k}: {changes[k]}")
-    let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
+    # let changes = write_tree()
+    # var c: seq[string] = @[]
+    # for k in changes.keys():
+    #     c.add(fmt"{k}: {changes[k]}")
+    # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
+    #change to make it easier to manipulate and keep track of commits as a whole
+    let objectMapAtTimeOfCommit: Table[system.string, seq[string]] = write_tree()
+    let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit)
 
-    return data.write_commit_objects(commitContent)
+    return data.write_commit_objects(commitContent.toJson())
+
+proc get_commit(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]]]=
+    return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]]])
 
 proc checkout(oid: string)=
-    discard
-    # let commit = get_commit(oid)
-    # read_tree(commit)
-
-proc get_commit(oid: string)=
-    # let commit = data.get_commit_objects(oid)
-    discard
-
+    let objectMapAtTimeOfCommit = get_commit(oid)
+    read_tree_commit(objectMapAtTimeOfCommit.commitContent)
 
 proc is_ignored()=
     discard

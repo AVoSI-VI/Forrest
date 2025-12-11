@@ -17,7 +17,7 @@ proc cat_file(oid: string)=
     echo data.get_object(oid)
 
 proc write_tree()=
-    echo base.write_tree()
+    discard base.write_tree()
 
 proc read_tree()=
     base.read_tree()
@@ -67,6 +67,6 @@ when isMainModule:
     [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],
     [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}],
     [Forrest.list_remotes],
-    [Forrest.clone_repo, help={"remotename": "requires a short hand name for the set remote"}],
-    [Forrest.clone_file_full, help={"remotename": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}]
+    [Forrest.clone_repo, help={"remoterepotag": "requires a short hand name for the set remote"}],
+    [Forrest.clone_file_full, help={"remoterepotag": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}]
     )
