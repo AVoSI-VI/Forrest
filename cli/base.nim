@@ -6,7 +6,7 @@ import data
 # base wish list
 
 
-proc write_tree*(directory: string = "."): Table[string, seq[string]]=
+proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]]=
     #TODO: revisit
     var objectMap: Table[system.string, seq[string]] = (
         if fileExists("./.Forrest/serialized/Forrest.json"):
@@ -39,7 +39,7 @@ proc write_tree*(directory: string = "."): Table[string, seq[string]]=
         echo "unable to write serialized Forrest.json file"
         echo ""
         echo e.msg
-    return objectMap
+    return (objectMap: objectMap, changes: changes)
 
 proc empty_current_directory()=
     #TODO: revisit. Was easiest way to clear non git directories as nims walk dir procs and remove dir procs 
@@ -113,7 +113,7 @@ proc commit*(message: string): string=
     #     c.add(fmt"{k}: {changes[k]}")
     # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
     #change to make it easier to manipulate and keep track of commits as a whole
-    let objectMapAtTimeOfCommit: Table[system.string, seq[string]] = write_tree()
+    let objectMapAtTimeOfCommit: Table[system.string, seq[string]] = write_tree().objectMap
     let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit)
 
     return data.write_commit_objects(commitContent.toJson())

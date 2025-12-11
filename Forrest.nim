@@ -17,7 +17,7 @@ proc cat_file(oid: string)=
     echo data.get_object(oid)
 
 proc write_tree()=
-    discard base.write_tree()
+    echo base.write_tree().changes
 
 proc read_tree()=
     base.read_tree()
