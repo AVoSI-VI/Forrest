@@ -29,5 +29,5 @@ proc list_remotes*(): Table[string, string]=
         else:
             initTable[string, string]()
     )
-    echo remoteMap
+    # echo remoteMap
     return remoteMap

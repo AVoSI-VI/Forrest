@@ -1,3 +1,8 @@
+# Version:
+Officially on version - 0.1.0
+Most of the basic functionality has been implemented but the project is still
+very much in flux.
+
 # Forrest
 New home of Forrest-python rewritten in nim language
 
@@ -16,7 +21,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - if you want to contribute to the project please open an issue to discuss what you intend to change first before submitting a pull request. Yes even if it is just correcting a spelling mistake.
 
 ## TODO List:
-- reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file
+- ~~reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file~~
 - staging additions for commit - ie: git add ...
 - cloneing from a remote repo
 - clone a list of files

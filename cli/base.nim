@@ -121,7 +121,7 @@ proc commit*(message: string): string=
 proc get_commit(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]]]=
     return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]]])
 
-proc checkout(oid: string)=
+proc checkout_commit*(oid: string)=
     let objectMapAtTimeOfCommit = get_commit(oid)
     read_tree_commit(objectMapAtTimeOfCommit.commitContent)
 
