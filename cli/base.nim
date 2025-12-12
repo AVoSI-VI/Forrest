@@ -113,13 +113,13 @@ proc commit*(message: string): string=
     #     c.add(fmt"{k}: {changes[k]}")
     # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
     #change to make it easier to manipulate and keep track of commits as a whole
-    let objectMapAtTimeOfCommit: Table[system.string, seq[string]] = write_tree().objectMap
-    let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit)
+    let objectMapAtTimeOfCommit: tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]] = write_tree()#.objectMap
+    let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit.objectMap, changes: objectMapAtTimeOfCommit.changes)
 
     return data.write_commit_objects(commitContent.toJson())
 
-proc get_commit(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]]]=
-    return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]]])
+proc get_commit*(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]]=
+    return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]])
 
 proc checkout_commit*(oid: string)=
     let objectMapAtTimeOfCommit = get_commit(oid)

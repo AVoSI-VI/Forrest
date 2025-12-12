@@ -14,7 +14,9 @@ Alternative to git focused on single files and file history being treated as obj
     initiallizes an empty Forrest repository under .Forrest/
   Options:
   hash_object [REQUIRED,optional-params] 
-    hashes and writes a file into the .Forrest objects directory the generated hash is the file name it is saved under
+    hashes and writes a file into the .Forrest objects directory
+    
+    the generated hash is the file name it is saved under
   Options:
       -f=, --filename=  string  REQUIRED  requires a filename to hash
   cat_file [REQUIRED,optional-params] 
@@ -22,18 +24,33 @@ Alternative to git focused on single files and file history being treated as obj
   Options:
       -o=, --oid=  string  REQUIRED  requires the oid of the file
   write_tree [optional-params] 
-    iterates through the current directory and generates objects for all files under the current directory, and writes a json serialized object map of where the files are
-    located within the directory - under the .Forrest serialized directory
+    iterates through the current directory and generates objects for all files
+    
+    under the current directory, and writes a json serialized object map of where
+    
+    the files are located within the directory - under the .Forrest serialized directory
   Options:
   read_tree [optional-params] 
-    gets the object map from the .Forrest serialized and writes all newest oid objects tracked within this is a destructive action
+    gets the object map from the .Forrest serialized and writes all
+    
+    newest oid objects tracked within
+    
+    this is a destructive action
   Options:
+  log [REQUIRED,optional-params] 
+    writes to the console the changes made in a provided commit along with the commit message
+  Options:
+      -o=, --oid=  string  REQUIRED  requires an oid of the commit to print out the log
   checkout_commit [REQUIRED,optional-params] 
-    gets the object map for the provided oid and writes all to the current directory this is a destructive action
+    gets the object map for the provided oid and writes all to the current directory
+    
+    this is a destructive action
   Options:
       -o=, --oid=  string  REQUIRED  requires an oid of the commit to checkout
   roll_back_file [REQUIRED,optional-params] 
-    writes provided object file this is a destructive action
+    writes provided object file
+    
+    this is a destructive action
   Options:
       -f=, --fileandpath=  string  REQUIRED  requires full path of file including filename
       -o=, --oid=          string  REQUIRED  requires the oid of the file
@@ -42,7 +59,9 @@ Alternative to git focused on single files and file history being treated as obj
   Options:
       -f=, --fileandpath=  string  REQUIRED  requires full path of file including filename
   set_remote [REQUIRED,optional-params] 
-    set a remote location to clone from currently only works for local file system
+    set a remote location to clone from
+    
+    currently only works for local file system
   Options:
       -r=, --remotename=  string  REQUIRED  requires a short hand name for the set remote
       --remoteorigin=     string  REQUIRED  this is a repo you are setting as the origin, it will either be a file path or a url
@@ -50,11 +69,19 @@ Alternative to git focused on single files and file history being treated as obj
     lists all set remotes
   Options:
   clone_repo [REQUIRED,optional-params] 
-    copies .Forrest repo from a set remote to the current directory and reads the tree from the foreign repo this is a destructive action
+    copies .Forrest repo from a set remote to the current directory
+    
+    and reads the tree from the foreign repo
+    
+    this is a destructive action
   Options:
       -r=, --remoterepotag=  string  REQUIRED  requires a short hand name for the set remote
   clone_file_full [REQUIRED,optional-params] 
-    copies .Forrest repo from a set remote to the current directory and writes the provided file to the current location this is a destructive action
+    copies .Forrest repo from a set remote to the current directory
+    
+    and writes the provided file to the current location
+    
+    this is a destructive action
   Options:
       -r=, --remoterepotag=  string  REQUIRED  requires a short hand name for the set remote
       -f=, --fileandpath=    string  REQUIRED  requires full path of file including filename
@@ -81,7 +108,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - only saving diffs to save on storage space
 - compressing file objects to save on space
 - branching and merging
-- automatically ignore .git repos
+- ~~automatically ignore .git repos~~
 - gitignore equivalent
 - documentation, documentation, documentation
 - TBD
