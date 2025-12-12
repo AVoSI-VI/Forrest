@@ -1,4 +1,4 @@
-import std/dirs, std/paths#, std/base64, os
+import std/[dirs, paths, os]#, std/paths#, std/base64, os
 
 import ../lib/[filehasher]
 
@@ -18,11 +18,12 @@ proc get_ref*()=
 
 proc hash_object*(data: string): string=
     let oid = hash_file_contents_for_OID(data)
-    try:
-        writeFile(forrestDir & "objects/" & oid, data)
-        
-    except CatchableError as e:
-        echo e.msg
+    if not fileExists(forrestDir & "objects/" & oid):
+        try:
+            writeFile(forrestDir & "objects/" & oid, data)
+            
+        except CatchableError as e:
+            echo e.msg
     return oid
 
 proc get_object*(oid: string): string=
