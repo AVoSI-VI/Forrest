@@ -45,8 +45,10 @@ proc commit(message: string)=
 proc log(oid: string)=
     ## writes to the console the changes made in a provided commit along with the commit message
     let commit: tuple[commitMessage: string, commitContent: Table[system.string, seq[string]], changes: Table[system.string, seq[string]]] = base.get_commit(oid)
+    echo "Changes:"
     echo commit.changes
     echo ""
+    echo "Commit Message:"
     echo commit.commitMessage
 
 proc checkout(branchTag: string)=
@@ -115,5 +117,6 @@ when isMainModule:
     [Forrest.set_remote, help={"remotename": "requires a short hand name for the set remote", "remoteorigin": "this is a repo you are setting as the origin, it will either be a file path or a url"}],
     [Forrest.list_remotes],
     [Forrest.clone_repo, help={"remoterepotag": "requires a short hand name for the set remote"}],
-    [Forrest.clone_file_full, help={"remoterepotag": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}]
+    [Forrest.clone_file_full, help={"remoterepotag": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}],
+    [Forrest.commit, help={"message": "requires a commit message"}]
     )

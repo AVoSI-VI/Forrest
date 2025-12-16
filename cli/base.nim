@@ -1,4 +1,4 @@
-import std/[tables, dirs, paths, strutils, strformat, os]
+import std/[tables, dirs, paths, strutils, os]
 
 import jsony
 
