@@ -1,14 +1,15 @@
-import std/[dirs, paths, os]#, std/paths#, std/base64, os
+import std/[dirs, paths, os]
 
 import ../lib/[filehasher]
 
 let forrestDir: string = ".Forrest/"
-#data wish list
+
 proc initialize_repo*()=
     createDir(Path(forrestDir))
     createDir(Path(forrestDir & "objects"))
     createDir(Path(forrestDir & "serialized")) # replace "pickle" directory from Forrest-python
     createDir(Path(forrestDir & "commits"))
+    createDir(Path(forrestDir & "branches"))
 
 proc update_ref*()=
     discard

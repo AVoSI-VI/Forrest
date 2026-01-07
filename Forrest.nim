@@ -1,12 +1,10 @@
 # using cligen -> https://github.com/c-blake/cligen
 # use jsony to serialize objects to then dump to disk -> https://github.com/treeform/jsony
 
-# import os, strformat
 import std/tables
 
 import cli/[data, base, remote, clone]
 
-#starting with the wish list
 proc init()=
     ## initiallizes an empty Forrest repository under .Forrest/
     data.initialize_repo()
@@ -51,7 +49,7 @@ proc log(oid: string)=
     echo "Commit Message:"
     echo commit.commitMessage
 
-proc checkout(branchTag: string)=
+proc checkout(branchtag: string)=
     discard
 
 proc checkout_commit(oid: string)=
@@ -99,6 +97,14 @@ proc clone_file_full(remoterepotag: string, fileandpath: string)=
     ## this is a destructive action
     clone.clone_file_full(remoterepotag, fileandpath)
 
+proc clone_file_multi(remoterepotag: string, filesandpaths: string)=
+    ## copies .Forrest repo from a set remote to the current directory
+    ## 
+    ## and writes the provided comma seperated list of files to the current location
+    ##
+    ## this is a destructive action
+    clone.clone_file_multi(remoterepotag, filesandpaths)
+
 proc clone_file_sparse(remoterepotag: string, fileandpath: string)=
     discard
 
@@ -118,5 +124,6 @@ when isMainModule:
     [Forrest.list_remotes],
     [Forrest.clone_repo, help={"remoterepotag": "requires a short hand name for the set remote"}],
     [Forrest.clone_file_full, help={"remoterepotag": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}],
+    [Forrest.clone_file_multi, help={"remoterepotag": "requires a short hand name for the set remote", "filesandpaths": "requires a comma separated list of full path of file including filename"}],
     [Forrest.commit, help={"message": "requires a commit message"}]
     )

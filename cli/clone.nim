@@ -1,9 +1,8 @@
-import std/[dirs, tables, os]
+import std/[dirs, tables, os, strformat, strutils]
 
 import jsony
 
 import ./[remote, base, data]
-# clone wish list
 
 proc clone_repo*(remoteRepoTag: string)=
     let remoteRepos = remote.list_remotes()
@@ -20,13 +19,6 @@ proc clone_file_full*(remoteRepoTag: string, fileAndPath: string)=
     let remoteToClone = remoteRepos[remoteRepoTag]
     let directoryForClone = ".Forrest"
     copyDir(remoteToClone, directoryForClone)
-    # var objectMap: Table[system.string, seq[string]] = (
-    #     if fileExists("./.Forrest/serialized/Forrest.json"):
-    #         var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-    #         contentsOfForrestJson.fromJson(Table[string, seq[string]])
-    #     else:
-    #         initTable[string, seq[string]]()
-    # )
     
     base.write_clone_file(fileAndPath)
     remote.set_remote("parent", remoteToClone)
@@ -38,6 +30,20 @@ proc clone_file_sparse*(remoteRepoTag: string, fileAndPath: string)=
     ## used for quick clones of only needed files without the overhead of pulling the entire repo
     let remoteRepos = remote.list_remotes()
     let remoteToClone = remoteRepos[remoteRepoTag]
+    let directoryForClone = "."
+    data.initialize_repo()
+    # copyFileToDir(fmt"{remoteToClone}/", ".")
+    
+
+proc clone_file_multi*(remoteRepoTag: string, filesAndPaths: string)=
+    ##does a full clone of a remote file system base repo
+    ## and writes the specified files
+    let splitUpFiles = filesAndPaths.split(",")
+    let remoteRepos = remote.list_remotes()
+    let remoteToClone = remoteRepos[remoteRepoTag]
     let directoryForClone = ".Forrest"
-    # if not fileExists("")
-    # let objectMap = 
+    copyDir(remoteToClone, directoryForClone)
+    
+    for fileandpath in splitUpFiles:
+        base.write_clone_file(fileAndPath)
+    remote.set_remote("parent", remoteToClone)

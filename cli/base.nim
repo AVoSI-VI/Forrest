@@ -3,8 +3,6 @@ import std/[tables, dirs, paths, strutils, os]
 import jsony
 
 import data
-# base wish list
-
 
 proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]]=
     #TODO: revisit
@@ -112,6 +110,7 @@ proc commit*(message: string): string=
     # for k in changes.keys():
     #     c.add(fmt"{k}: {changes[k]}")
     # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
+    
     #change to make it easier to manipulate and keep track of commits as a whole
     let objectMapAtTimeOfCommit: tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]] = write_tree()#.objectMap
     let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit.objectMap, changes: objectMapAtTimeOfCommit.changes)
@@ -124,6 +123,9 @@ proc get_commit*(oid: string): tuple[commitMessage: string, commitContent: Table
 proc checkout_commit*(oid: string)=
     let objectMapAtTimeOfCommit = get_commit(oid)
     read_tree_commit(objectMapAtTimeOfCommit.commitContent)
+
+proc checkout*(branchtag: string)=
+    discard
 
 proc is_ignored()=
     discard

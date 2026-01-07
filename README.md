@@ -85,6 +85,19 @@ Alternative to git focused on single files and file history being treated as obj
   Options:
       -r=, --remoterepotag=  string  REQUIRED  requires a short hand name for the set remote
       -f=, --fileandpath=    string  REQUIRED  requires full path of file including filename
+  clone_file_multi [REQUIRED,optional-params] 
+    copies .Forrest repo from a set remote to the current directory
+    
+    and writes the provided comma seperated list of files to the current location
+    
+    this is a destructive action
+  Options:
+      -r=, --remoterepotag=  string  REQUIRED  requires a short hand name for the set remote
+      -f=, --filesandpaths=  string  REQUIRED  requires a comma separated list of full path of file including filename
+  commit [REQUIRED,optional-params] 
+    writes tree of current directory with a provided message
+  Options:
+      -m=, --message=  string  REQUIRED  requires a commit message
 ```
 
 # Why:
@@ -103,7 +116,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - ~~reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file~~
 - staging additions for commit - ie: git add ...
 - cloneing from a remote repo
-- clone a list of files
+- ~~clone a list of files~~
 - split up object directories for performance
 - only saving diffs to save on storage space
 - compressing file objects to save on space
