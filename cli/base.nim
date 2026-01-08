@@ -93,7 +93,7 @@ proc roll_back_file*(fileAndPath: string, oid: string)=
     # if fileExists("./.Forrest/serialized/Forrest.json"):
     #     var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
     #     let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-    let objectMap = return_forrest_as_table()
+    let objectMap: Table[system.string, seq[string]] = return_forrest_as_table()
     if objectMap.hasKey(fileAndPath):
         let oidIndex = find(objectMap[fileAndPath], oid)
         if oidIndex != -1:#find returns a -1 if the search item is not found    
@@ -103,7 +103,7 @@ proc show_oid_history*(fileAndPath: string)=
     # if fileExists("./.Forrest/serialized/Forrest.json"):
     #     var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
     #     let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-    let objectMap = return_forrest_as_table()
+    let objectMap: Table[system.string, seq[string]] = return_forrest_as_table()
     if objectMap.hasKey(fileAndPath):
         echo objectMap[fileAndPath]
     else:
