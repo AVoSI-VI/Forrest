@@ -3,16 +3,18 @@ import std/[tables, dirs, paths, strutils, os]
 import jsony
 
 import data
+import ../lib/serializeinteractions
 
 proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]]=
     #TODO: revisit
-    var objectMap: Table[system.string, seq[string]] = (
-        if fileExists("./.Forrest/serialized/Forrest.json"):
-            var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-            contentsOfForrestJson.fromJson(Table[string, seq[string]])
-        else:
-            initTable[string, seq[string]]()
-    )
+    # var objectMap: Table[system.string, seq[string]] = (
+    #     if fileExists("./.Forrest/serialized/Forrest.json"):
+    #         var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+    #         contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    #     else:
+    #         initTable[string, seq[string]]()
+    # )
+    var objectMap: Table[system.string, seq[string]] = return_forrest_as_table()
     var changes: Table[system.string, seq[string]] = initTable[string, seq[string]]()
     for files in walkDirRec(Path(directory)):
         #split out the directory for easier ignore
@@ -62,9 +64,11 @@ proc empty_current_directory()=
         osdirs.removeDir(nonGitDirectory) #recursively deletes directories
 
 proc read_tree*()= 
-    if fileExists("./.Forrest/serialized/Forrest.json"):
-        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    # if fileExists("./.Forrest/serialized/Forrest.json"):
+        # var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+        # let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    let objectMap: Table[system.string, seq[string]] = return_forrest_as_table()
+    if not objectMap.len() == 0:
         empty_current_directory()
         for k in objectMap.keys():
             let l = len(objectMap[k]) - 1
@@ -77,32 +81,35 @@ proc read_tree_commit(commitContent: Table[string, seq[string]])=
         writeFile(k, data.get_object(commitContent[k][l]))
 
 proc write_clone_file*(fileAndPathToClone: string)=
-    if fileExists("./.Forrest/serialized/Forrest.json"):
-        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-        if objectMap.hasKey(fileAndPathToClone):
-            let l = len(objectMap[fileAndPathToClone]) - 1
-            writeFile(fileAndPathToClone, data.get_object(objectMap[fileAndPathToClone][l]))
+    # if fileExists("./.Forrest/serialized/Forrest.json"):
+    #     var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+    #     let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    let objectMap: Table[system.string, seq[string]] = return_forrest_as_table()
+    if objectMap.hasKey(fileAndPathToClone):
+        let l = len(objectMap[fileAndPathToClone]) - 1
+        writeFile(fileAndPathToClone, data.get_object(objectMap[fileAndPathToClone][l]))
         
 proc roll_back_file*(fileAndPath: string, oid: string)=
-    if fileExists("./.Forrest/serialized/Forrest.json"):
-        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-        if objectMap.hasKey(fileAndPath):
-            let oidIndex = find(objectMap[fileAndPath], oid)
-            if oidIndex != -1:#find returns a -1 if the search item is not found    
-                writeFile(fileAndPath, data.get_object(objectMap[fileAndPath][oidIndex]))
+    # if fileExists("./.Forrest/serialized/Forrest.json"):
+    #     var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+    #     let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    let objectMap = return_forrest_as_table()
+    if objectMap.hasKey(fileAndPath):
+        let oidIndex = find(objectMap[fileAndPath], oid)
+        if oidIndex != -1:#find returns a -1 if the search item is not found    
+            writeFile(fileAndPath, data.get_object(objectMap[fileAndPath][oidIndex]))
 
 proc show_oid_history*(fileAndPath: string)=
-    if fileExists("./.Forrest/serialized/Forrest.json"):
-        var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
-        let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
-        if objectMap.hasKey(fileAndPath):
-            echo objectMap[fileAndPath]
-        else:
-            echo "file and path does not exist in repo"
+    # if fileExists("./.Forrest/serialized/Forrest.json"):
+    #     var contentsOfForrestJson = readFile("./.Forrest/serialized/Forrest.json")
+    #     let objectMap: Table[string, seq[string]] = contentsOfForrestJson.fromJson(Table[string, seq[string]])
+    let objectMap = return_forrest_as_table()
+    if objectMap.hasKey(fileAndPath):
+        echo objectMap[fileAndPath]
     else:
-        echo "Forrest.json does not exist"
+        echo "file and path does not exist in repo"
+    # else:
+    #     echo "Forrest.json does not exist"
 
 proc commit*(message: string): string=
     # let changes = write_tree()

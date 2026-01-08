@@ -1,5 +1,5 @@
 # Version:
-Officially on version - 0.1.0
+Officially on version - 0.1.2
 Most of the basic functionality has been implemented but the project is still
 very much in flux.
 
