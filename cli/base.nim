@@ -31,14 +31,15 @@ proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[st
         else:
             objectMap[sFiles].add(oid)
             changes[sFiles].add(oid)
-    try:
-        let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
-        defer: f.close
-        f.writeLine(objectMap.toJson())
-    except Exception as e:
-        echo "unable to write serialized Forrest.json file"
-        echo ""
-        echo e.msg
+    # try:
+    #     let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
+    #     defer: f.close
+    #     f.writeLine(objectMap.toJson())
+    # except Exception as e:
+    #     echo "unable to write serialized Forrest.json file"
+    #     echo ""
+    #     echo e.msg
+    serialize_and_write_forrest(objectMap)
     return (objectMap: objectMap, changes: changes)
 
 proc empty_current_directory()=

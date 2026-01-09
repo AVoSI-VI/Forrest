@@ -1,6 +1,4 @@
-import std/[dirs, tables, os, strformat, strutils]
-
-import jsony
+import std/[tables, os, strutils]
 
 import ./[remote, base, data]
 

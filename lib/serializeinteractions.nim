@@ -22,3 +22,23 @@ proc return_remotes_as_table*(): Table[string, string]=
             initTable[string, string]()
     )
     return remoteMap
+
+proc serialize_and_write_forrest*(objectMap: Table[string, seq[string]])=
+    try:
+        let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
+        defer: f.close
+        f.writeLine(objectMap.toJson())
+    except Exception as e:
+        echo "unable to write serialized Forrest.json file"
+        echo ""
+        echo e.msg
+
+proc serialize_and_write_remote*(remoteMap: Table[string, string])=
+    try:
+        let f = open("./.Forrest/serialized/remotes.json", fmWrite)
+        defer: f.close
+        f.writeLine(remoteMap.toJson())
+    except Exception as e:
+        echo "unable to write serialized remotes.json file"
+        echo ""
+        echo e.msg
