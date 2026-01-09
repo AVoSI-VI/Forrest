@@ -1,4 +1,4 @@
-import std/[tables, os]
+import std/[tables]
 
 import jsony
 

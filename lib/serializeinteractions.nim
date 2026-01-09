@@ -21,3 +21,4 @@ proc return_remotes_as_table*(): Table[string, string]=
         else:
             initTable[string, string]()
     )
+    return remoteMap
