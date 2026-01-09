@@ -3,6 +3,8 @@ Officially on version - 0.1.2
 Most of the basic functionality has been implemented but the project is still
 very much in flux.
 
+Working on V:0.2.0 will be implementing Branching
+
 # Forrest
 New home of Forrest-python rewritten in nim language
 
