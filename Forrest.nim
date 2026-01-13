@@ -3,7 +3,7 @@
 
 import std/tables
 
-import cli/[data, base, remote, clone]
+import cli/[data, base, remote, clone, branch]
 
 proc init()=
     ## initiallizes an empty Forrest repository under .Forrest/
@@ -49,8 +49,8 @@ proc log(oid: string)=
     echo "Commit Message:"
     echo commit.commitMessage
 
-proc checkout(branchtag: string)=
-    discard
+proc checkout(tag: string, create: bool = false)=
+    branch.checkout_branch(tag, create)
 
 proc checkout_commit(oid: string)=
     ## gets the object map for the provided oid and writes all to the current directory
@@ -117,6 +117,7 @@ when isMainModule:
     [Forrest.write_tree],
     [Forrest.read_tree],
     [Forrest.log, help={"oid": "requires an oid of the commit to print out the log"}],
+    [Forrest.checkout, help={"tag": "required tagged name of branch to checkout", "create":"add this switch to your command to create a branch with the passed in tag name"}],
     [Forrest.checkout_commit, help={"oid": "requires an oid of the commit to checkout"}],
     [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
     [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],
