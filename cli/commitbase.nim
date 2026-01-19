@@ -3,6 +3,7 @@ import std/[tables]
 import jsony
 
 import data, base
+import ../TYPEDEFS/commitObj
 
 proc read_tree_commit(commitContent: Table[string, seq[string]])=
     base.empty_current_directory()

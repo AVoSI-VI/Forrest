@@ -1,6 +1,6 @@
 import std/[tables, dirs, paths, strutils, os]
 
-import jsony
+# import jsony
 
 import data
 import ../lib/serializeinteractions
@@ -75,11 +75,11 @@ proc read_tree*()=
             let l = len(objectMap[k]) - 1
             writeFile(k, data.get_object(objectMap[k][l]))
 
-proc read_tree_commit(commitContent: Table[string, seq[string]])=
-    empty_current_directory()
-    for k in commitContent.keys():
-        let l = len(commitContent[k]) - 1
-        writeFile(k, data.get_object(commitContent[k][l]))
+# proc read_tree_commit(commitContent: Table[string, seq[string]])=
+#     empty_current_directory()
+#     for k in commitContent.keys():
+#         let l = len(commitContent[k]) - 1
+#         writeFile(k, data.get_object(commitContent[k][l]))
 
 proc write_clone_file*(fileAndPathToClone: string)=
     # if fileExists("./.Forrest/serialized/Forrest.json"):
