@@ -42,7 +42,7 @@ proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[st
     serialize_and_write_forrest(objectMap)
     return (objectMap: objectMap, changes: changes)
 
-proc empty_current_directory()=
+proc empty_current_directory*()=
     #TODO: revisit. Was easiest way to clear non git directories as nims walk dir procs and remove dir procs 
     # don't work the same as python. would need a custom implementation to keep it in line with python
     let directory = "."
@@ -112,28 +112,25 @@ proc show_oid_history*(fileAndPath: string)=
     # else:
     #     echo "Forrest.json does not exist"
 
-proc commit*(message: string): string=
-    # let changes = write_tree()
-    # var c: seq[string] = @[]
-    # for k in changes.keys():
-    #     c.add(fmt"{k}: {changes[k]}")
-    # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
+# proc commit*(message: string): string=
+#     # let changes = write_tree()
+#     # var c: seq[string] = @[]
+#     # for k in changes.keys():
+#     #     c.add(fmt"{k}: {changes[k]}")
+#     # let commitContent = fmt"Changes: {c}" & "\n" & "\n" & fmt"{message}" & "\n"
     
-    #change to make it easier to manipulate and keep track of commits as a whole
-    let objectMapAtTimeOfCommit: tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]] = write_tree()#.objectMap
-    let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit.objectMap, changes: objectMapAtTimeOfCommit.changes)
+#     #change to make it easier to manipulate and keep track of commits as a whole
+#     let objectMapAtTimeOfCommit: tuple[objectMap: Table[string, seq[string]], changes: Table[string, seq[string]]] = write_tree()#.objectMap
+#     let commitContent: tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]] = (commitMessage: message, commitContent: objectMapAtTimeOfCommit.objectMap, changes: objectMapAtTimeOfCommit.changes)
 
-    return data.write_commit_objects(commitContent.toJson())
+#     return data.write_commit_objects(commitContent.toJson())
 
-proc get_commit*(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]]=
-    return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]])
+# proc get_commit*(oid: string): tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]]=
+#     return data.get_commit_objects(oid).fromJson(tuple[commitMessage: string, commitContent: Table[string, seq[string]], changes: Table[string, seq[string]]])
 
-proc checkout_commit*(oid: string)=
-    let objectMapAtTimeOfCommit = get_commit(oid)
-    read_tree_commit(objectMapAtTimeOfCommit.commitContent)
-
-proc checkout*(branchtag: string)=
-    discard
+# proc checkout_commit*(oid: string)=
+#     let objectMapAtTimeOfCommit = get_commit(oid)
+#     read_tree_commit(objectMapAtTimeOfCommit.commitContent)
 
 proc is_ignored()=
     discard

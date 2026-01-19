@@ -1,13 +1,17 @@
-
+import std/tables
 #wishlist
+
 
 proc create_branch*(tag: string)=
     discard
 
-proc merge_branch*()=
+proc merge*()=
     discard
 
 proc get_current_branch()=
+    discard
+
+proc set_current_branch()=
     discard
 
 proc checkout_branch*(tag: string, create: bool = false)=

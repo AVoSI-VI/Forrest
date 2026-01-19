@@ -42,3 +42,13 @@ proc serialize_and_write_remote*(remoteMap: Table[string, string])=
         echo "unable to write serialized remotes.json file"
         echo ""
         echo e.msg
+
+proc serialize_and_write_branch*(branchMap: Table[string, string])=
+    try:
+        let f = open("./.Forrest/branches/branches.json", fmWrite)
+        defer: f.close
+        f.writeLine(branchMap.toJson())
+    except Exception as e:
+        echo "unable to write serialized branches.json file"
+        echo ""
+        echo e.msg

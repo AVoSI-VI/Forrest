@@ -3,7 +3,7 @@
 
 import std/tables
 
-import cli/[data, base, remote, clone, branch]
+import cli/[data, base, remote, clone, branch, commitbase]
 
 proc init()=
     ## initiallizes an empty Forrest repository under .Forrest/
@@ -17,7 +17,7 @@ proc hash_object(filename: string)=
     echo data.hash_object(filename)
 
 proc cat_file(oid: string)=
-    ## gets and prints and object files contents to the console
+    ## gets and prints an object files contents to the console
     echo data.get_object(oid)
 
 proc write_tree()=
@@ -38,11 +38,11 @@ proc read_tree()=
 
 proc commit(message: string)=
     ## writes tree of current directory with a provided message
-    echo base.commit(message)
+    echo commitbase.commit(message)
 
 proc log(oid: string)=
     ## writes to the console the changes made in a provided commit along with the commit message
-    let commit: tuple[commitMessage: string, commitContent: Table[system.string, seq[string]], changes: Table[system.string, seq[string]]] = base.get_commit(oid)
+    let commit: tuple[commitMessage: string, commitContent: Table[system.string, seq[string]], changes: Table[system.string, seq[string]]] = commitbase.get_commit(oid)
     echo "Changes:"
     echo commit.changes
     echo ""
@@ -56,7 +56,7 @@ proc checkout_commit(oid: string)=
     ## gets the object map for the provided oid and writes all to the current directory
     ##
     ## this is a destructive action
-    base.checkout_commit(oid)
+    commitbase.checkout_commit(oid)
 
 proc tag()=
     discard
