@@ -116,6 +116,14 @@ proc resolve_repo_path*(objectMap: Table[string, seq[string]], raw: string): str
         return raw
     return norm
 
+proc return_branches_as_table*(): Table[string, string]=
+    if fileExists("./.Forrest/branches/branches.json"):
+        let contents = readFile("./.Forrest/branches/branches.json")
+        if contents.len == 0:
+            return initTable[string, string]()
+        return contents.fromJson(Table[string, string])
+    return initTable[string, string]()
+
 proc serialize_and_write_branch*(branchMap: Table[string, string])=
     try:
         let f = open("./.Forrest/branches/branches.json", fmWrite)
@@ -125,3 +133,58 @@ proc serialize_and_write_branch*(branchMap: Table[string, string])=
         echo "unable to write serialized branches.json file"
         echo ""
         echo e.msg
+
+proc read_head*(): string=
+    if fileExists("./.Forrest/HEAD"):
+        let name = readFile("./.Forrest/HEAD").strip()
+        if name.len > 0:
+            return name
+    return "main"
+
+proc write_head*(name: string)=
+    writeFile("./.Forrest/HEAD", name & "\n")
+
+proc ensure_head_and_main*()=
+    if not fileExists("./.Forrest/HEAD"):
+        write_head("main")
+    if not fileExists("./.Forrest/branches/branches.json"):
+        var branches = initTable[string, string]()
+        branches["main"] = ""
+        serialize_and_write_branch(branches)
+
+proc current_commit_oid*(): string=
+    let branches = return_branches_as_table()
+    let name = read_head()
+    if branches.hasKey(name):
+        return branches[name]
+    return ""
+
+proc point_branch*(name, oid: string)=
+    var branches = return_branches_as_table()
+    branches[name] = oid
+    serialize_and_write_branch(branches)
+
+proc read_merge_head*(): string=
+    if fileExists("./.Forrest/MERGE_HEAD"):
+        return readFile("./.Forrest/MERGE_HEAD").strip()
+    return ""
+
+proc write_merge_head*(oid: string)=
+    writeFile("./.Forrest/MERGE_HEAD", oid & "\n")
+
+proc read_merge_conflicts*(): seq[string]=
+    if fileExists("./.Forrest/MERGE_CONFLICTS"):
+        let contents = readFile("./.Forrest/MERGE_CONFLICTS")
+        if contents.len == 0:
+            return @[]
+        return contents.fromJson(seq[string])
+    return @[]
+
+proc write_merge_conflicts*(paths: seq[string])=
+    writeFile("./.Forrest/MERGE_CONFLICTS", paths.toJson() & "\n")
+
+proc clear_merge_state*()=
+    if fileExists("./.Forrest/MERGE_HEAD"):
+        removeFile("./.Forrest/MERGE_HEAD")
+    if fileExists("./.Forrest/MERGE_CONFLICTS"):
+        removeFile("./.Forrest/MERGE_CONFLICTS")

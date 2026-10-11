@@ -3,7 +3,7 @@ Officially on version - 0.1.2
 Most of the basic functionality has been implemented but the project is still
 very much in flux.
 
-Working on V:0.2.0 will be implementing Branching
+Working on V:0.2.0 includes branching and merging.
 
 # Forrest
 New home of Forrest-python rewritten in nim language
@@ -42,13 +42,37 @@ Alternative to git focused on single files and file history being treated as obj
     this is a destructive action
   Options:
   log [REQUIRED,optional-params] 
-    writes to the console the changes made in a provided commit along with the commit message
+    writes to the console the changes made in a provided commit along with the commit message and parents
   Options:
       -o=, --oid=  string  REQUIRED  requires an oid of the commit to print out the log
+  checkout [REQUIRED,optional-params] 
+    switches to a branch and writes that branch's files
+    
+    refuses when the index or tracked files do not match the current commit
+    
+    pass --create to create the branch at the current commit
+  Options:
+      -t=, --tag=  string  REQUIRED  required tagged name of branch to checkout
+      -c, --create bool    false     add this switch to create a branch with the passed in tag name
+  branch [optional-params] 
+    lists branches and marks the current one
+  Options:
+  merge [REQUIRED,optional-params] 
+    merges a branch into the current branch
+    
+    a fast-forward moves the branch pointer
+    
+    other merges are finished by commit
+    
+    when both sides change the same file, conflict markers are written into it
+  Options:
+      -t=, --tag=  string  REQUIRED  branch to merge into the current branch
   checkout_commit [REQUIRED,optional-params] 
     gets the object map for the provided oid and writes all to the current directory
     
     this is a destructive action
+    
+    does not move the current branch
   Options:
       -o=, --oid=  string  REQUIRED  requires an oid of the commit to checkout
   roll_back_file [REQUIRED,optional-params] 
@@ -141,7 +165,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - split up object directories for performance
 - only saving diffs to save on storage space
 - compressing file objects to save on space
-- branching and merging
+- ~~branching and merging~~
 - ~~automatically ignore .git repos~~
 - gitignore equivalent
 - documentation, documentation, documentation

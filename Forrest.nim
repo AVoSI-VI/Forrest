@@ -3,7 +3,7 @@
 
 import std/tables
 
-import cli/[data, base, remote, clone, branch, commitbase, stage]
+import cli/[data, base, remote, clone, branch, commitbase, stage, merge]
 
 proc init()=
     ## initiallizes an empty Forrest repository under .Forrest/
@@ -58,7 +58,7 @@ proc commit(message: string)=
 
 proc log(oid: string)=
     ## writes to the console the changes made in a provided commit along with the commit message
-    let commit: tuple[commitMessage: string, commitContent: Table[system.string, seq[string]], changes: Table[system.string, seq[string]]] = commitbase.get_commit(oid)
+    let commit = commitbase.get_commit(oid)
     echo "Changes:"
     for path, oids in commit.changes.pairs:
         if oids.len == 0:
@@ -68,9 +68,29 @@ proc log(oid: string)=
     echo ""
     echo "Commit Message:"
     echo commit.commitMessage
+    echo ""
+    echo "Parents:"
+    if commit.parents.len == 0:
+        echo "(none)"
+    else:
+        for parent in commit.parents:
+            echo parent
 
 proc checkout(tag: string, create: bool = false)=
+    ## switches to a branch
+    ##
+    ## pass --create to create the branch at the current commit
     branch.checkout_branch(tag, create)
+
+proc list_branches()=
+    ## lists branches and marks the current one
+    branch.list_branches()
+
+proc merge_branch(tag: string)=
+    ## merges a branch into the current branch
+    ##
+    ## a fast-forward moves the branch pointer; other merges are finished by commit
+    merge.merge_branch(tag)
 
 proc checkout_commit(oid: string)=
     ## gets the object map for the provided oid and writes all to the current directory
@@ -138,6 +158,8 @@ when isMainModule:
     [Forrest.read_tree],
     [Forrest.log, help={"oid": "requires an oid of the commit to print out the log"}],
     [Forrest.checkout, help={"tag": "required tagged name of branch to checkout", "create":"add this switch to your command to create a branch with the passed in tag name"}],
+    [Forrest.list_branches, cmdName="branch"],
+    [Forrest.merge_branch, cmdName="merge", help={"tag": "branch to merge into the current branch"}],
     [Forrest.checkout_commit, help={"oid": "requires an oid of the commit to checkout"}],
     [Forrest.roll_back_file, help={"fileandpath": "requires full path of file including filename", "oid": "requires the oid of the file"}],
     [Forrest.show_oid_history, help={"fileandpath": "requires full path of file including filename"}],

@@ -14,6 +14,7 @@ proc initialize_repo*()=
     createDir(Path(forrestDir & "commits"))
     createDir(Path(forrestDir & "branches"))
     ensure_staging_files()
+    ensure_head_and_main()
 
 proc update_ref*()=
     discard

@@ -4,7 +4,7 @@ import jsony
 
 import data
 import ../lib/[filehasher, serializeinteractions]
-import ../TYPEDEFS/indexObj
+import ../TYPEDEFS/[indexObj, commitObj]
 
 proc is_outside_repo(path: string): bool=
     return path == ".." or path.startsWith("../")
@@ -190,50 +190,59 @@ proc show_status*()=
     echo "Untracked:"
     echo_plain(untracked)
 
-proc drop_path(paths: seq[string], path: string): seq[string]=
-    result = @[]
-    for existing in paths:
-        if existing != path:
-            result.add(existing)
+proc copy_snapshot(source: Table[string, seq[string]]): Table[string, seq[string]]=
+    result = initTable[string, seq[string]]()
+    for path, history in source.pairs:
+        result[path] = history
 
-proc commit_staged*(message: string): string=
+proc commit_staged*(message: string, parents: seq[string], baseSnapshot: Table[string, seq[string]]): string=
     let index = return_index_as_table()
-    if index.len == 0:
+    if index.len == 0 and parents.len < 2:
         return "nothing to commit"
     var objectMap = return_forrest_as_table()
-    var deleted = return_deleted()
+    var snapshot = copy_snapshot(baseSnapshot)
     var changes: Table[string, seq[string]] = initTable[string, seq[string]]()
 
     for path, entry in index.pairs:
         if entry.action == actionDelete:
-            if objectMap.hasKey(path) and path notin deleted:
-                deleted.add(path)
+            if snapshot.hasKey(path):
+                snapshot.del(path)
                 changes[path] = @[]
         elif entry.action == actionAdd:
-            let resurrect = path in deleted
+            var history = if snapshot.hasKey(path): snapshot[path] else: @[]
+            let wasAbsent = not snapshot.hasKey(path)
+            if history.len == 0 or history[^1] != entry.oid:
+                history.add(entry.oid)
+                snapshot[path] = history
+                changes[path] = @[entry.oid]
+            elif wasAbsent:
+                snapshot[path] = history
+                changes[path] = @[entry.oid]
             if not objectMap.hasKey(path):
                 objectMap[path] = @[entry.oid]
-                changes[path] = @[entry.oid]
-                deleted = drop_path(deleted, path)
-            elif latest_oid(objectMap[path]) != entry.oid:
+            elif objectMap[path][^1] != entry.oid:
                 objectMap[path].add(entry.oid)
-                changes[path] = @[entry.oid]
-                deleted = drop_path(deleted, path)
-            elif resurrect:
-                changes[path] = @[entry.oid]
-                deleted = drop_path(deleted, path)
 
-    if changes.len == 0:
+    if parents.len >= 2:
+        for path, entry in index.pairs:
+            if path in changes:
+                continue
+            if entry.action == actionDelete:
+                changes[path] = @[]
+            elif entry.action == actionAdd:
+                changes[path] = @[entry.oid]
+    if changes.len == 0 and parents.len < 2:
         return "nothing to commit"
 
-    var snapshot: Table[string, seq[string]] = initTable[string, seq[string]]()
-    for path, history in objectMap.pairs:
-        if path notin deleted:
-            snapshot[path] = history
+    var deleted: seq[string] = @[]
+    for path in objectMap.keys():
+        if path notin snapshot:
+            deleted.add(path)
 
     serialize_and_write_forrest(objectMap)
     serialize_and_write_deleted(deleted)
-    let commitContent = (commitMessage: message, commitContent: snapshot, changes: changes)
-    let oid = data.write_commit_objects(commitContent.toJson())
+    let commitRecord = COMMIT(commitMessage: message, commitContent: snapshot, changes: changes, parents: parents)
+    let oid = data.write_commit_objects(commitRecord.toJson())
+    point_branch(read_head(), oid)
     serialize_and_write_index(initTable[string, IndexEntry]())
     return oid

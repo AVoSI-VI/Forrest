@@ -5,3 +5,4 @@ type
         commitMessage*: string
         commitContent*: Table[string, seq[string]]
         changes*: Table[string, seq[string]]
+        parents*: seq[string]
