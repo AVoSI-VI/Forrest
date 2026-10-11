@@ -3,7 +3,7 @@ import std/[tables, dirs, paths, strutils, os]
 # import jsony
 
 import data
-import ../lib/serializeinteractions
+import ../lib/[serializeinteractions, clearing]
 
 proc write_worktree_file*(path, contents: string)=
     let parent = parentDir(path)
@@ -24,9 +24,8 @@ proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[st
     var changes: Table[system.string, seq[string]] = initTable[string, seq[string]]()
     for files in walkDirRec(Path(directory)):
         #split out the directory for easier ignore
-        let splitUpDir = string(files).split("/")
         let sFiles = $files #only do the string conversion once
-        if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
+        if is_clearing_ignored(sFiles, false):
             continue
         let oid = data.hash_object(sFiles)
         if not objectMap.hasKey(sFiles):
@@ -36,6 +35,8 @@ proc write_tree*(directory: string = "."): tuple[objectMap: Table[string, seq[st
             continue
         else:
             objectMap[sFiles].add(oid)
+            if not changes.hasKey(sFiles):
+                changes[sFiles] = @[]
             changes[sFiles].add(oid)
     # try:
     #     let f = open("./.Forrest/serialized/Forrest.json", fmWrite)
@@ -57,7 +58,7 @@ proc empty_current_directory*()=
     for files in walkDirRec(Path(directory)):
         let splitUpDir = string(files).split("/")
         let sFiles = $files
-        if splitUpDir.contains(".git") or splitUpDir.contains(".Forrest"): #skip git directories by default
+        if is_clearing_ignored(sFiles, false):
             continue
         nonGitDirs.add(splitUpDir[1]) # add actual directory from split ex: [".", ".Forrest"]
         try:
@@ -66,9 +67,20 @@ proc empty_current_directory*()=
             echo "unable to clear current directory"
             echo ""
             echo e.msg
-    #remove now empty directories
+    #remove now empty directories, leaving any directory that still holds an ignored file
     for nonGitDirectory in nonGitDirs:
-        osdirs.removeDir(nonGitDirectory) #recursively deletes directories
+        var stillHasFiles = false
+        try:
+            for _ in walkDirRec(Path(nonGitDirectory)):
+                stillHasFiles = true
+                break
+        except CatchableError:
+            stillHasFiles = false
+        if not stillHasFiles:
+            try:
+                osdirs.removeDir(nonGitDirectory)
+            except CatchableError:
+                discard
 
 proc read_tree*()= 
     # if fileExists("./.Forrest/serialized/Forrest.json"):
@@ -146,6 +158,3 @@ proc show_oid_history*(fileAndPath: string)=
 # proc checkout_commit*(oid: string)=
 #     let objectMapAtTimeOfCommit = get_commit(oid)
 #     read_tree_commit(objectMapAtTimeOfCommit.commitContent)
-
-proc is_ignored()=
-    discard

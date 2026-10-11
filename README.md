@@ -145,6 +145,9 @@ Alternative to git focused on single files and file history being treated as obj
       -m=, --message=  string  REQUIRED  requires a commit message
 ```
 
+# .clearing
+A `.clearing` file in the repo root uses gitignore rules: comments, globs, `dir/`, `**`, and `!` to un-ignore. `add`, `status`, and `write_tree` skip untracked paths that match. Files already tracked stay tracked. `.git` and `.Forrest` are always skipped. `read_tree` and `checkout_commit` leave ignored files on disk.
+
 # Why:
 git is great at what it does but I have run into many issues with needing to change singular files in very large repos and generally needing to treat those singular files as objects themselves as opposed to
 the entire structure as they don't generally need to be in my use case - 25 million files becomes incredibly slow on commits and gets out of hand when there are lots of changes.
@@ -167,6 +170,6 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 - compressing file objects to save on space
 - ~~branching and merging~~
 - ~~automatically ignore .git repos~~
-- gitignore equivalent
+- ~~gitignore equivalent~~
 - documentation, documentation, documentation
 - TBD

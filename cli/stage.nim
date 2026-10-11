@@ -3,15 +3,11 @@ import std/[algorithm, dirs, os, paths, strutils, tables]
 import jsony
 
 import data
-import ../lib/[filehasher, serializeinteractions]
+import ../lib/[filehasher, serializeinteractions, clearing]
 import ../TYPEDEFS/[indexObj, commitObj]
 
 proc is_outside_repo(path: string): bool=
     return path == ".." or path.startsWith("../")
-
-proc is_ignored_path(path: string): bool=
-    let parts = path.split("/")
-    return parts.contains(".git") or parts.contains(".Forrest")
 
 proc require_repo(): bool=
     if not data.repo_exists():
@@ -40,7 +36,7 @@ proc stage_directory(index: var Table[string, IndexEntry], objectMap: Table[stri
     let root = if dir == ".": "." else: dir
     for files in walkDirRec(Path(root)):
         let path = normalize_repo_path($files)
-        if path.len == 0 or is_outside_repo(path) or is_ignored_path(path):
+        if path.len == 0 or is_outside_repo(path) or is_clearing_ignored(path, false):
             continue
         stage_add(index, path)
     stage_missing_tracked(index, objectMap, deleted, dir)
@@ -50,7 +46,10 @@ proc add_one(index: var Table[string, IndexEntry], objectMap: Table[string, seq[
     if path.len == 0 or is_outside_repo(path):
         echo "path is outside the repository: " & raw
         return
-    if is_ignored_path(path):
+    if path != "." and dirExists(path) and is_clearing_ignored(path, true):
+        echo "path is ignored: " & path
+        return
+    if fileExists(path) and is_clearing_ignored(path, false):
         echo "path is ignored: " & path
         return
     if path == "." or dirExists(path):
@@ -156,7 +155,7 @@ proc show_status*()=
     var untracked: seq[string] = @[]
     for files in walkDirRec(Path(".")):
         let path = normalize_repo_path($files)
-        if path.len == 0 or is_outside_repo(path) or is_ignored_path(path):
+        if path.len == 0 or is_outside_repo(path) or is_clearing_ignored(path, false):
             continue
         let workOid = hash_file_contents_for_OID(path)
         if index.hasKey(path):
