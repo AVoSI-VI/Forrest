@@ -31,6 +31,8 @@ Alternative to git focused on single files and file history being treated as obj
     under the current directory, and writes a json serialized object map of where
     
     the files are located within the directory - under the .Forrest serialized directory
+    
+    does not read or update the staging index
   Options:
   read_tree [optional-params] 
     gets the object map from the .Forrest serialized and writes all
@@ -96,8 +98,25 @@ Alternative to git focused on single files and file history being treated as obj
   Options:
       -r=, --remoterepotag=  string  REQUIRED  requires a short hand name for the set remote
       -f=, --filesandpaths=  string  REQUIRED  requires a comma separated list of full path of file including filename
+  add [optional-params] 
+    stages files or directories for the next commit
+    
+    a missing tracked file is staged for deletion
+    
+    pass one or more paths after the command; "." stages the worktree
+  Options:
+  unstage [optional-params] 
+    removes paths from the index without changing the worktree
+    
+    "." clears the index; a directory removes staged paths under it
+  Options:
+  status [optional-params] 
+    shows staged, unstaged, and untracked paths
+  Options:
   commit [REQUIRED,optional-params] 
-    writes tree of current directory with a provided message
+    writes a commit from the staged index with a provided message
+    
+    an empty index does not create a commit
   Options:
       -m=, --message=  string  REQUIRED  requires a commit message
 ```
@@ -116,7 +135,7 @@ Forrest doesn't preclude you from using git you can use both at the same time in
 
 ## TODO List:
 - ~~reimplement all features already created in Forrest-python -> creating file tree and objects, setting a remote repo, commits, logs, file rollback, clone from local repo, clone single file~~
-- staging additions for commit - ie: git add ...
+- ~~staging additions for commit - ie: git add ...~~
 - cloneing from a remote repo
 - ~~clone a list of files~~
 - split up object directories for performance

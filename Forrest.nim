@@ -3,7 +3,7 @@
 
 import std/tables
 
-import cli/[data, base, remote, clone, branch, commitbase]
+import cli/[data, base, remote, clone, branch, commitbase, stage]
 
 proc init()=
     ## initiallizes an empty Forrest repository under .Forrest/
@@ -36,15 +36,35 @@ proc read_tree()=
     ## this is a destructive action
     base.read_tree()
 
+proc add(paths: seq[string])=
+    ## stages files or directories for the next commit
+    ##
+    ## a missing tracked file is staged for deletion
+    stage.add_paths(paths)
+
+proc unstage(paths: seq[string])=
+    ## removes paths from the index
+    ##
+    ## "." clears the index
+    stage.unstage_paths(paths)
+
+proc status()=
+    ## shows staged, unstaged, and untracked paths
+    stage.show_status()
+
 proc commit(message: string)=
-    ## writes tree of current directory with a provided message
+    ## writes a commit from the staged index with a provided message
     echo commitbase.commit(message)
 
 proc log(oid: string)=
     ## writes to the console the changes made in a provided commit along with the commit message
     let commit: tuple[commitMessage: string, commitContent: Table[system.string, seq[string]], changes: Table[system.string, seq[string]]] = commitbase.get_commit(oid)
     echo "Changes:"
-    echo commit.changes
+    for path, oids in commit.changes.pairs:
+        if oids.len == 0:
+            echo path & ": deleted"
+        else:
+            echo path & ": " & $oids
     echo ""
     echo "Commit Message:"
     echo commit.commitMessage
@@ -126,5 +146,8 @@ when isMainModule:
     [Forrest.clone_repo, help={"remoterepotag": "requires a short hand name for the set remote"}],
     [Forrest.clone_file_full, help={"remoterepotag": "requires a short hand name for the set remote", "fileandpath": "requires full path of file including filename"}],
     [Forrest.clone_file_multi, help={"remoterepotag": "requires a short hand name for the set remote", "filesandpaths": "requires a comma separated list of full path of file including filename"}],
+    [Forrest.add, help={"paths": "one or more paths to stage; a missing tracked file is staged for deletion"}],
+    [Forrest.unstage, help={"paths": "paths to remove from the index; \".\" clears the index"}],
+    [Forrest.status],
     [Forrest.commit, help={"message": "requires a commit message"}]
     )
